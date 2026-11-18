@@ -81,28 +81,19 @@ You now turn each cycle into a small set of numbers (features) and train classif
 
 ## Part C — Test set and conclusions (at home)
 
-**C1.** Choose your final model using the validation results only. Retrain it on all 84 labelled cycles, then predict the class of the 36 files in `test/`. Save the predictions as `predictions.csv` with two columns, `file;predicted_class` (for example `hole_01;Steel`). Send this file to the instructor by email: you will receive your test accuracy. The true classes of the test files are not released.
-
-**C2.** Answer in a few sentences each:
+Choose your final model using the validation results only. Retrain it on all 84 labelled cycles, then predict the class of the 36 files in `test/`. Save the predictions as `predictions.csv` with two columns, `file;predicted_class` (for example `hole_01;Steel`). Send this file to the instructor by email: you will receive your test accuracy. The true classes of the test files are not released.
 
 1. Which single feature separates the materials best, and what does it mean physically?
-2. In an earlier version of this TD, students received the machine Z position. The workpieces of each material had different heights. Why would a model reach 100 % accuracy with that signal, and why would it be useless in production?
-3. All aluminium holes were drilled first, then steel, then titanium, with the same drill. Name one factor other than the material that could also change the power. How would you design the experiment to rule it out?
-4. Give one industrial use of this model and one limitation.
+
+2. Give one industrial use of this model and one limitation.
 
 ## What to keep for the exam
 
-The course exam will include a question on this TD: you will explain how you proceeded, the difficulties you met, and present one or two figures of your results. Keep your notebook and save your figures as you go.
+The course exam will include a question on this TD. Keep your notebook and save your figures as you go.
 
 Figures worth keeping:
 
-- One power cycle per class with the drilling phases marked (A1–A2)
-- Table of Pc, Mc, Fc and kc per material (A4)
-- Learning curve: validation accuracy against the number of training cycles per class (B5)
-- Confusion matrix of your logistic regression on the validation set (B3), and your test accuracy (C1)
-
-**Optional extensions, if you finish early:**
-
-- **Without labels.** Apply `PCA(n_components=2)` and `KMeans(n_clusters=4)` to the scaled training features, ignoring the labels. Compare the clusters with the true classes using `adjusted_rand_score`. Would the materials be found without labels?
-- **Raw curves.** Instead of hand-made features, resample each cycle to 450 points (every 10th sample) and train an MLP or a 1D CNN (`nn.Conv1d`) directly on the curve. Does it beat your feature-based model?
-- **Unknown class.** Retrain without the `Air` cycles and predict the air cycles of the test set. What does the model answer? How could you detect a cycle that belongs to none of the trained classes?
+- One power cycle per class with the drilling phases marked 
+- Table of Pc, Mc, Fc and kc per material 
+- Learning curve: validation accuracy against the number of training cycles per class 
+- Confusion matrix of your logistic regression on the validation set, and your test accuracy 
