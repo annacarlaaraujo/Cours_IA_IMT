@@ -31,16 +31,7 @@ Each file contains one complete drilling cycle (approach, two passes, retract) w
 | `train/` | Labelled cycles: the file name gives the class | `Aluminium_01…25`, `Steel_01…31`, `Titanium_01…14`, `Air_01…14` (84 files) |
 | `test/` | Unlabelled cycles to classify | `hole_01…36` (36 files) |
 
-To load the data in Colab, upload the zip file, then:
 
-```python
-!unzip -q IA_Usinage_Materiaux_ETUDIANTS_train_test.zip
-import glob, os, pandas as pd
-ROOT = "IA_Usinage_Materiaux_ETUDIANTS"
-train = {os.path.basename(f)[:-4]: pd.read_csv(f) for f in sorted(glob.glob(f"{ROOT}/train/*.csv"))}
-test  = {os.path.basename(f)[:-4]: pd.read_csv(f) for f in sorted(glob.glob(f"{ROOT}/test/*.csv"))}
-labels = {name: name.split("_")[0] for name in train}   # 'Aluminium', 'Steel', 'Titanium', 'Air'
-```
 
 ## Part A — Understanding the signal (in class)
 
