@@ -19,7 +19,7 @@ The controller trace recorded the spindle active power every 2 ms (500 Hz).
 
 | Parameter | Value |
 | --- | --- |
-| Tool | Twist drill, 2 cutting lips, diameter D = 11 mm |
+| Tool | Twist drill, 2 cutting lips, diameter D = 11 mm, Inner diameter = 4mm, Point angle 120 degrees |
 | Spindle speed | N = 1085 rev/min |
 | Feed | f = 0.1 mm/rev |
 | Cycle | Peck drilling: 2 passes of 6 mm, retract between passes |
