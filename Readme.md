@@ -66,11 +66,13 @@ Think about how to construct a Python code to identify the curve and to classify
 
 You now can turn each cycle into a small set of numbers (features) and train classifiers, using the same tools as in the IMT Mines Albi labs (Prof. Jad).
 
-a) Write a function `features(df)` that returns at least 3 physically justified features for one cycle. Examples: idle power, maximum smoothed power, Pc of each pass, duration of the cutting phases, kc from A4. Build `X_train` (84 rows) and `y_train` (4 classes). Justify each feature in one sentence.
+a) Write a function `features(df)` that returns at least 3 physically justified features for one cycle. Examples: idle power, maximum smoothed power, Pc of each pass, duration of the cutting phases, kc from A.9. Build `X_train` (84 rows) and `y_train` (4 classes). Could you justify each feature ?
 
 b) Split the 84 labelled cycles into training (75 %) and validation (25 %) with `train_test_split(..., stratify=y, random_state=0)`. Fit `StandardScaler` on the training part only. Why must the scaler not see the validation data?
 
-c) Train a `LogisticRegression` baseline. Report the validation accuracy and plot the confusion matrix (`ConfusionMatrixDisplay`). Which classes, if any, are confused?
+c) Train a `LogisticRegression` baseline (as your previous class : https://github.com/JadM133/Cours_IA_IMT/blob/main/labs/01_MLP_Binary_Classification_solution.ipynb . 
+
+What is the accuracy and plot the confusion matrix (`ConfusionMatrixDisplay`). 
 
 ## Part C - Extras (if you want to go deeper) :
 
