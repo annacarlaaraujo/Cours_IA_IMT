@@ -6,13 +6,16 @@ Anna Carla Araujo – INSA Toulouse / Institut Clément Ader · November 2026
 
 You will build a model that recognizes the drilled material (aluminium, steel, titanium, or no material) using only the spindle power measured by the CNC. The same drill and the same cutting conditions were used in every test; only the workpiece material changes.
 
-This TD applies what you practised in the Machine Learning labs at IMT Mines Albi (Institut Mines-Télécom) (train/test split, scaling without leakage, logistic regression baseline, PyTorch MLP, confusion matrix) to real machining data. Before any model, you will use machining knowledge to understand the signal: drilling phases, spindle speed, torque, and cutting force.
+This TD applies what you practised in the Machine Learning labs at IMT Mines Albi to real machining data. 
 
-**Work in Google Colab, in pairs.** Part A and questions B1–B3 are done during the TD session (1h30). Questions B4–B5 and Part C are completed at home. The steps take you from the raw signal to the results you will present in the course exam (see the last section). No report is graded.
+Before any model, you will use machining knowledge to understand the signal: drilling phases, spindle speed, torque, and cutting force.
+
+**Work in Google Colab, in groups of 3.** 
 
 ## Experimental setup and data
 
-The tests were run at INSA Toulouse on a CNC machining centre with a Siemens SINUMERIK controller (16 April 2025). The controller trace recorded the spindle active power every 2 ms (500 Hz).
+The tests were run at INSA Toulouse on a CNC machining centre with a Siemens SINUMERIK controller. 
+The controller trace recorded the spindle active power every 2 ms (500 Hz).
 
 | Parameter | Value |
 | --- | --- |
@@ -33,59 +36,45 @@ Each file contains one complete drilling cycle (approach, two passes, retract) w
 
 
 
-## Part A — Understanding the signal (in class)
+## Part A — Understanding the process and the signal 
 
 No machine learning yet: the goal is to know what the curves mean before asking a model to use them.
 
-**A1.** Plot one cycle of each class on the same figure. The raw signal is noisy; also plot a moving average over 0.1 s (50 samples). Describe in two sentences how the four classes differ.
+a) What is the cutting speed variation along the cutting edge (m/min) ?
+b) What is the feed velocity in z direction (mm/min) ?
+c) What is the time of the cutting, in minutes and in seconds ?
+d) What is the area of cutting, after the tool point is inside the hole  (mm^2) ?
+e) How is the variation of the cutting force of one cutting edge and the power of two cutting edges, if we consider Kc=700 MPa ?
+f) Plot one curve (any curve) and look the format of the curve. There is a plateau ? How many seconds of cutting ? Could you plot in terms of z position (z=0 is the surface of the piece) ?
+g) Is there a plateau before cutting ? This is the idle power. 
+h) Calculate the power plateau related to the cutting power : Pc(only cutting) = P(measured) − P(idle)
 
-**A2.** On one steel cycle, mark the phases of the drilling cycle: approach (tool in air), entry of the drill point, first pass, retract and chip evacuation, second pass, final retract. Which signal feature tells you that the drill is cutting? Why does the power rise gradually at the start of the first pass?
+i) What would it be the Kc of this curve ?
 
-**A3.** Compute the amplitude spectrum (FFT) of the power during an air-cutting phase and identify the main frequency. Show that it matches the passage of the 2 cutting lips at N = 1085 rev/min (2 × N / 60). Then compute the feed velocity vf = f × N (mm/min).
 
-*Hint:* `np.fft.rfft` and `np.fft.rfftfreq(n, d=0.002)`; remove the mean before the FFT.
+## Part B — Features and models 
 
-**A4.** For each material, estimate the cutting power of the second pass, Pc = P(cutting) − P(idle), where P(idle) is the power just before the drill enters the material. Then compute:
+Think about how to construct a Python code to identify the curve and to classify the curve.
 
-```math
-M_c = \frac{P_c}{\omega}, \qquad \omega = \frac{2\pi N}{60}
-```
+You now can turn each cycle into a small set of numbers (features) and train classifiers, using the same tools as in the IMT Mines Albi labs (Prof. Jad).
 
-```math
-F_c \approx \frac{2\,M_c}{D} \quad \text{(cutting force per lip, applied at a radius } D/4\text{)}
-```
+a) Write a function `features(df)` that returns at least 3 physically justified features for one cycle. Examples: idle power, maximum smoothed power, Pc of each pass, duration of the cutting phases, kc from A4. Build `X_train` (84 rows) and `y_train` (4 classes). Justify each feature in one sentence.
 
-```math
-k_c = \frac{P_c}{Q}, \qquad Q = \frac{\pi D^2}{4}\, v_f \quad \text{(specific cutting energy, N/mm}^2\text{)}
-```
+b) Split the 84 labelled cycles into training (75 %) and validation (25 %) with `train_test_split(..., stratify=y, random_state=0)`. Fit `StandardScaler` on the training part only. Why must the scaler not see the validation data?
 
-Present Mc, Fc and kc for the three materials in a table. Compare kc with typical values from your machining course. Why is your kc likely higher than the handbook value? Which force of the drilling process can you **not** obtain from the spindle power?
+c) Train a `LogisticRegression` baseline. Report the validation accuracy and plot the confusion matrix (`ConfusionMatrixDisplay`). Which classes, if any, are confused?
 
-## Part B — Features and models (B1–B3 in class, B4–B5 at home)
+## Part C - Extras (if you want to go deeper) :
 
-You now turn each cycle into a small set of numbers (features) and train classifiers, using the same tools as in the IMT Mines Albi labs.
+Could you build a PyTorch MLP with `nn.Sequential`: n_features → 16 → ReLU → 16 → ReLU → 4 logits.  ?
 
-**B1.** Write a function `features(df)` that returns at least 3 physically justified features for one cycle. Examples: idle power, maximum smoothed power, Pc of each pass, duration of the cutting phases, kc from A4. Build `X_train` (84 rows) and `y_train` (4 classes). Justify each feature in one sentence.
-
-**B2.** Split the 84 labelled cycles into training (75 %) and validation (25 %) with `train_test_split(..., stratify=y, random_state=0)`. Fit `StandardScaler` on the training part only. Why must the scaler not see the validation data?
-
-**B3.** Train a `LogisticRegression` baseline. Report the validation accuracy and plot the confusion matrix (`ConfusionMatrixDisplay`). Which classes, if any, are confused?
-
-*End of the TD session. Questions B4 and B5 are completed at home.*
-
-**B4.** Build a PyTorch MLP with `nn.Sequential`: n_features → 16 → ReLU → 16 → ReLU → 4 logits. Use `nn.CrossEntropyLoss()` and Adam (learning rate 0.01). Train with the five familiar steps (clear gradients, forward pass, loss, backward pass, update). Compare its validation accuracy with the baseline. Is the neural network useful here? Explain.
+you can use `nn.CrossEntropyLoss()` and Adam (learning rate 0.01) and train with the five familiar steps (clear gradients, forward pass, loss, backward pass, update). Compare its validation accuracy with the baseline. Is the neural network useful here? Explain.
 
 *Hint:* this is a 4-class problem, so the labels are integers 0–3 (`torch.long`) and the prediction is `logits.argmax(dim=1)`, not a sigmoid threshold.
 
-**B5.** How many training cycles do you need? Train the baseline with 1, 2, 3, 5 and 8 cycles per class (random draws, repeated 20 times) and plot the mean validation accuracy against the number of cycles. Where does the curve reach a plateau?
-
-## Part C — Test set and conclusions (at home)
-
 Choose your final model using the validation results only. Retrain it on all 84 labelled cycles, then predict the class of the 36 files in `test/`. Save the predictions as `predictions.csv` with two columns, `file;predicted_class` (for example `hole_01;Steel`). Send this file to the instructor by email: you will receive your test accuracy. The true classes of the test files are not released.
 
-1. Which single feature separates the materials best, and what does it mean physically?
-
-2. Give one industrial use of this model and one limitation.
+Which single feature separates the materials best, and what does it mean physically?
 
 ## What to keep for the exam
 
@@ -94,6 +83,7 @@ The course exam will include a question on this TD. Keep your notebook and save 
 Figures worth keeping:
 
 - One power cycle per class with the drilling phases marked 
-- Table of Pc, Mc, Fc and kc per material 
-- Learning curve: validation accuracy against the number of training cycles per class 
+- Table of kc per material 
+- Learning curve: validation accuracy against the number of training cycles per class
+Extra:
 - Confusion matrix of your logistic regression on the validation set, and your test accuracy 
