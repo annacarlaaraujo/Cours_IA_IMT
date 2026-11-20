@@ -41,17 +41,23 @@ Each file contains one complete drilling cycle (approach, two passes, retract) w
 No machine learning yet: the goal is to know what the curves mean before asking a model to use them.
 
 1 - What is the cutting speed variation along the cutting edge (m/min) ?
+
 2 - What is the feed velocity in z direction (mm/min) ?
+
 3 - What is the time of the cutting, in minutes and in seconds ?
+
 4 - What is the area of cutting, after the tool point is inside the hole  (mm^2) ?
+
 5 -  How is the variation of the cutting force of one cutting edge and the power of two cutting edges, if we consider Kc=700 MPa ?
 
 
 6 - Plot one curve (any curve) and look the format of the curve. There is a plateau ? How many seconds of cutting ? Could you plot in terms of z position (z=0 is the surface of the piece) ?
+
 7 - Is there a plateau before cutting ? This is the idle power. 
+
 8 -  Calculate the power plateau related to the cutting power : Pc(only cutting) = P(measured) − P(idle)
 
-i) What would it be the Kc of this curve ?
+9 -  What would it be the Kc (MPa) of this curve ?
 
 
 ## Part B — Features and models 
