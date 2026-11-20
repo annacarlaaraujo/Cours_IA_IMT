@@ -40,7 +40,7 @@ Each file contains one complete drilling cycle (approach, two passes, retract) w
 
 No machine learning yet: the goal is to know what the curves mean before asking a model to use them.
 
-#a)# What is the cutting speed variation along the cutting edge (m/min) ?
+1 - What is the cutting speed variation along the cutting edge (m/min) ?
 
 b) What is the feed velocity in z direction (mm/min) ?
 c) What is the time of the cutting, in minutes and in seconds ?
